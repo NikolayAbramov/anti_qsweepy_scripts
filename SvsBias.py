@@ -5,7 +5,7 @@ from anti_qsweepy.routines.helper_functions import *
 import tables
 from numpy import *
 
-Data_dir ="E:\data\Abramov" 
+Data_dir ="D:\Abramov" 
 plotting_script = "plot_2d_S"
 row_descr = "Current, A"
 
@@ -21,9 +21,6 @@ power = -60
 bw = 1000
 
 SegmentedSweep = False
-#Segments =[ {'Start':Fstart, 'Bandwidth': 200 },
-#{'Start':7e9, 'Bandwidth': 50 },
-#{'Start':15e9,'Bandwidth': 10 }]
 
 Segments =[ {'start':Fstart, 'bandwidth': 500, 'power':power },
 {'start':7e9, 'bandwidth': 100, 'power':power },
@@ -31,7 +28,7 @@ Segments =[ {'start':Fstart, 'bandwidth': 500, 'power':power },
 
 na = Agilent_PNA.NetworkAnalyzer('A-N5242A-22023')
 #bias_source = STS60.BiasSourceByNNDAC("NNDAC")
-bias_source = Yokogawa_GS200.CurrentSource('Yokogawa_GS200')
+bias_source = Keithley_2400.CurrentSource('2400')
 #bias_source = Keithley_2651.MagnetSupply("NNDAC", rate = 1.)
 ###########################################################################
 print("VNA bias scan")
