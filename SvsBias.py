@@ -20,13 +20,13 @@ Npoints = 3000
 power = -60
 bw = 1000
 
-SegmentedSweep = False
+SegmentedSweep = True
 
 Segments =[ {'start':Fstart, 'bandwidth': 500, 'power':power },
 {'start':7e9, 'bandwidth': 100, 'power':power },
 {'start':15e9,'bandwidth': 20, 'power':power }]
 
-na = Agilent_PNA.NetworkAnalyzer('A-N5242A-22023')
+na = Agilent_PNA.NetworkAnalyzer('pna')
 #bias_source = STS60.BiasSourceByNNDAC("NNDAC")
 bias_source = Keithley_2400.CurrentSource('2400')
 #bias_source = Keithley_2651.MagnetSupply("NNDAC", rate = 1.)
@@ -45,7 +45,9 @@ na.sweep_type("LIN")
 if SegmentedSweep:
 	segment_table = uniform_segment_table(Fstop,Npoints,Segments)
 	na.seg_tab(segment_table)
-	na.sweep_type("SEGM")	
+	na.sweep_type("SEGM")
+else:
+	na.sweep_type("LIN")
 
 bias_source.range(bias_range)
 bias_source.limit(bias_limit)
