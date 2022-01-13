@@ -6,33 +6,38 @@ from collections import *
 
 data_dir = "E:/Abramov"
 plotting_script = "plot_all_iv.gp"
-sw_seq = OrderedDict((('6', [1,2]), ))
-#sw_seq = OrderedDict((('1', [1,2]),('2', [1,3]),('3', [1,4]),('4', [1,5]),('5', [1,6]),('6', [1,7]) ))
-#sw_seq = OrderedDict((('4', [7,8]),('5', [7,9]),('6', [7,10]),('7', [7,11]),('8', [7,12]) ))
+sw_seq = OrderedDict((('3', [5,6]), ))
+#sw_seq = OrderedDict((('1', [1,2]),('2', [1,3]),('3', [1,4]),('4', [1,5]),('5', [1,6]),('6', [1,7]),('7', [1,8]),('8', [1,9]),('9', [1,10]),('10', [1,11]) ))
+#sw_seq = OrderedDict((('1', [3,4]),('2', [3,5]),('3', [3,6]),('4', [3,7]),('5', [3,8]),('6', [3,9]),('7', [3,10]),('8', [3,11]),('9', [3,12]) ))
 #sw_seq = OrderedDict((('10-1', [1,11]), ))
 #sw_seq = OrderedDict((('2_full_2', [3,5]), ))
 
 start = 0.
-stop = 300e-6
-step = 1e-6
+stop = 200e-3
+step = 1e-3
 delay = 10e-3	
 
 I_list = arange(start, stop + step, step)
 I_list = append( I_list, arange(stop, -stop-step, -step))
 #I_list = append( I_list, arange(-stop, step, step))
 
-#smu = Keithley_2400.SMU("GPIB2::11::INSTR")
-smu = Artificial_SMU.Artificial_SMU( Keithley_6221.CurrentSource("GPIB2::10::INSTR"), Keithley_2182A.Voltmeter("GPIB2::7::INSTR") )
+smu = Keithley_2400.SMU("GPIB0::11::INSTR")
+vmeter = Keithley_2182A.Voltmeter("GPIB0::7::INSTR")
+#smu = Artificial_SMU.Artificial_SMU( Keithley_6221.CurrentSource("GPIB2::10::INSTR"), Keithley_2182A.Voltmeter("GPIB2::7::INSTR") )
 #smu = Artificial_SMU.Artificial_SMU( Keithley_2400.CurrentSource("GPIB2::11::INSTR"), Keithley_2182A.Voltmeter("GPIB2::7::INSTR") )
-smu.four_wire("on")
-smu.source('CURR')
+smu.four_wire("off")
+smu.source('VOLT')
 smu.source_autorange("OFF")
-smu.source_range(1e-3)
-smu.limit(0.6)
+smu.source_range(200e-3)
+smu.limit(100e-6)
 smu.aperture(2)
 smu.meter_range(0.1)
 smu.meter_autorange('ON')
 smu.averaging_count(1)
+
+vmeter.range(10e-3)
+vmeter.autorange("on")
+vmeter.aperture(2)
 
 switch_present = False
 try:
@@ -63,7 +68,8 @@ try:
 			smu.setpoint( I )
 			print("I = {:e} A".format(I), end = "\r")
 			time.sleep(delay)
-			V = smu.read_data()
+			I = smu.read_data()
+			V = vmeter.read_data()
 			file.write( "{:e}\t{:e}\n".format(I, V) )
 			file.flush()
 		if not switch_present:
@@ -71,6 +77,6 @@ try:
 except KeyboardInterrupt:
 	print("Interrupted by user")
 smu.setpoint(0)
-smu.output("OFF")
+#smu.output("OFF")
 smu.close()
 file.close()

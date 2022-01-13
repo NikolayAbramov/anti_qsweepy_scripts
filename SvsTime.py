@@ -1,24 +1,20 @@
 from anti_qsweepy.drivers import *
 from anti_qsweepy.routines import data_mgmt
 from anti_qsweepy.routines.helper_functions import *
-
 import tables
+import time
 from numpy import *
 
 Data_dir ="E:\Abramov" 
 plotting_script = "plot_2d_S"
-row_descr = "Current, A"
-
-bias_vals = arange(-6e-3,6e-3, 0.1e-3)
-bias_range = 10e-3
-bias_limit = 10
-
+row_descr = "Time, s"
+delay = 10e-3
 preset = False
 Fstart = 4e9
 Fstop = 10.5e9
 Npoints = 1500
-power = -10
-bw = 100
+power = -20
+bw = 20
 
 SegmentedSweep = False
 
@@ -28,13 +24,9 @@ Segments =[ {'start':Fstart, 'bandwidth': 500, 'power':power },
 
 na = Agilent_PNA.NetworkAnalyzer('PNA-X')
 #na = RS_ZNB20.NetworkAnalyzer('ZNB20')
-#bias_source = STS60.BiasSourceByNNDAC("NNDAC")
-#bias_source = Keithley_2400.CurrentSource('2400')
-bias_source = Keithley_6221.CurrentSource('GPIB0::10::INSTR')
-#bias_source = Keithley_2651.MagnetSupply("NNDAC", rate = 1.)
 ###########################################################################
-print("VNA bias scan")
-path = data_mgmt.default_save_path(Data_dir, name = "SvsBias")
+print("VNA sweeps in time")
+path = data_mgmt.default_save_path(Data_dir, name = "SvsTime")
 print("Saving files to: ",path)
 
 if preset:
@@ -49,30 +41,27 @@ if SegmentedSweep:
 	na.sweep_type("SEGM")
 else:
 	na.sweep_type("LIN")
-
-bias_source.range(bias_range)
-bias_source.limit(bias_limit)
 	
 Fna = na.freq_points()
 f, d_array, r_array = data_mgmt.extendable_2d(path, Fna, row_descr = row_descr)
 data_mgmt.spawn_plotting_script(path, plotting_script)
 
 na.output('on')
-bias_source.output('on')
 #Sweep
-print( "Parameter range: from {:.3f} to {:.3f}".format( min(bias_vals), max(bias_vals) ))
 na.soft_trig_arm()
-for bias_val in bias_vals:
-	try:
-		bias_source.setpoint(bias_val) 
-		print("Bias = {:f}".format(bias_val), end = '\r')
+t_start=time.time()
+n = 0
+while True:
+	try: 
+		t = time.time()-t_start
+		n+=1
+		print("Time = {:.2f}, doing sweep {:d}".format(t,n), end = '\r')
 		S = na.read_data()
 		d_array.append(S.reshape(1,len(S) ))
-		r_array.append( array([bias_val]) )
+		r_array.append( array([t]) )
 		f.flush()
 	except KeyboardInterrupt:
 		print( "Interrupted by user" )
 		break
-bias_source.output('off')		
 na.soft_trig_abort()	
 f.close()	
