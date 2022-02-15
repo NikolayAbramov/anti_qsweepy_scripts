@@ -6,15 +6,15 @@ from numpy import *
 import time
 from matplotlib.pyplot import *
 import warnings
+import pathlib
 
 Noise = True
 
 #Data mamagement
 Data_dir ="E:/Abramov" 
-path = data_mgmt.default_save_path(Data_dir, name = "gain_noise")
-print("Saving files to: ",path)
 
-plotting_script = "plot_jpa_noise"
+
+plotting_script = "JPA/plot_jpa_noise"
 
 #Sources
 
@@ -59,6 +59,15 @@ def gain():
 		Ib = bias.setpoint()
 	else: Ib = 0.	
 	return Fna, S21_on, S21_off, Fp, Pp, Ib
+	
+if len(sys.argv) > 1:
+	path = data_mgmt.default_save_path(Data_dir, name = "gain_noise_batch", time = False)
+	parameter_str = sys.argv[1]
+	path += "/"+parameter_str
+	pathlib.Path(path).mkdir(parents=True, exist_ok=True)
+else:
+	path = data_mgmt.default_save_path(Data_dir, name = "gain_noise")
+print("Saving files to: ",path)
 		
 try:
 	#Create HDF5 data file

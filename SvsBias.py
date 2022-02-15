@@ -13,11 +13,11 @@ bias_vals = arange(-6e-3,6e-3, 0.1e-3)
 bias_range = 10e-3
 bias_limit = 10
 
-preset = False
+preset = True
 Fstart = 4e9
 Fstop = 10.5e9
 Npoints = 1500
-power = -10
+power = -15
 bw = 100
 
 SegmentedSweep = False
