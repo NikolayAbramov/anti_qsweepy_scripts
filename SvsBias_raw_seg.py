@@ -9,28 +9,23 @@ Data_dir ="E:\Abramov"
 plotting_script = "plot_2d_S"
 row_descr = "Voltage, V"
 
-bias_step = 0.02
+bias_step = 0.1
 bias_vals = arange(0, 10, bias_step)
 bias_vals = hstack(( bias_vals, arange(10,-10, -bias_step) ))
-bias_vals = hstack(( bias_vals, arange(-10,10, bias_step) ))
-bias_vals = hstack(( bias_vals, arange(10,-10, -bias_step) ))
 bias_vals = hstack(( bias_vals, arange(-10,0, bias_step) ))
+#bias_vals = hstack(( bias_vals, arange(-10,10, bias_step) ))
+#bias_vals = hstack(( bias_vals, arange(10,-10, -bias_step) ))
+#bias_vals = hstack(( bias_vals, arange(-10,0, bias_step) ))
 
 bias_range = 10
 bias_limit = 100e-6
 
-preset = True
-Fstart = 100e6
-Fstop = 8e9
-Npoints = 32000
-power = -30
-bw = 100
 
-SegmentedSweep = False
+#Segments = [{'start':100e6, 'stop':200e6, 'points':20000, 'power':-20,'bandwidth':200},	
+#			{'start':250e6, 'stop':2e9, 'points':20000, 'power':-20,'bandwidth':500}]
+#			{'start':400e6, 'stop':500e6, 'points':1000, 'power':-20,'bandwidth':1e3}]
 
-Segments =[ {'start':Fstart, 'bandwidth': 500, 'power':power },
-{'start':7e9, 'bandwidth': 100, 'power':power },
-{'start':15e9,'bandwidth': 20, 'power':power }]
+Segments = [{'start':40e6, 'stop':1.6e9, 'points':20001, 'power':-20,'bandwidth':200},]
 
 na = Agilent_PNA.NetworkAnalyzer('PNA-X')
 #na = RS_ZNB20.NetworkAnalyzer('ZNB20')
@@ -44,18 +39,8 @@ print("VNA bias scan")
 path = data_mgmt.default_save_path(Data_dir, name = "SvsBias")
 print("Saving files to: ",path)
 
-if preset:
-	na.num_of_points(Npoints)
-	na.freq_start_stop((Fstart,Fstop))
-	na.bandwidth(bw)
-
-na.sweep_type("LIN")	
-if SegmentedSweep:
-	segment_table = uniform_segment_table(Fstop,Npoints,Segments)
-	na.seg_tab(segment_table)
-	na.sweep_type("SEGM")
-else:
-	na.sweep_type("LIN")
+na.seg_tab(Segments)
+na.sweep_type("SEGM")
 
 bias_source.source("VOLT")
 bias_source.range(bias_range)

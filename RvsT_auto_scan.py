@@ -11,25 +11,26 @@ tc_chan_high = "T6"
 tc_chan_low = "T5"
 T_high_low = 1.6 #between Low and High
 
-Ttol = 0.5
+Ttol = 1
 
 #Sample name: switch state
-sw_seq = OrderedDict(( ('1',[1,2]),('2',[3,4]), ('3',[5,6]), ('4',[7,8]),('5',[9,10]), ('6',[11,12]) ))
+sw_seq = OrderedDict(( ('1',[3,4]),('2',[7,8]) ))
 
-meas_delay = 15.
+meas_delay = 1.
 Rthr = 1e3 #Do not swap polarity above
 
-Imeas = 0.1e-6
+Imeas = 1e-6
 
-tc = Triton_DR200.TemperatureController('DR200', term_chars = '\n')
+tc = Triton_DR200.TemperatureController('Triton_DR200')
 
-smu = Artificial_SMU.Artificial_SMU( Keithley_6221.CurrentSource('GPIB1::10::INSTR'), Keithley_2182A.Voltmeter('GPIB1::7::INSTR') )
+#smu = Artificial_SMU.Artificial_SMU( Keithley_6221.CurrentSource('GPIB1::10::INSTR'), Keithley_2182A.Voltmeter('GPIB1::7::INSTR') )
+smu = Keithley_2400.SMU("Keithley_2400")
 
-smu.four_wire("on")
+smu.four_wire("off")
 smu.source('CURR')
 smu.source_autorange("OFF")
-smu.source_range(2e-6)
-smu.limit(0.3)
+smu.source_range(10e-6)
+smu.limit(2)
 smu.aperture(2)
 smu.meter_range(0.1)
 smu.meter_autorange('ON')
@@ -38,10 +39,10 @@ smu.averaging_count(1)
 
 switch_present = True
 try:
-	switch = DC_Switch.DC_Switch('dc_switch', term_chars = '\n')
+	switch = DC_Switch.DC_Switch('DC_switch')
 except:
 	switch_present = False
-	print('DC Switch not found')
+	print('Warning!: DC Switch not found')
 
 ##################################################################################
 def GetT():
