@@ -9,7 +9,7 @@ Data_dir ="C:/Users/User/Documents/IMPA"
 plotting_script = "plot_S"
 
 
-preset = False
+preset = True
 Fstart = 4e9
 Fstop = 10e9
 Npoints = 6000
