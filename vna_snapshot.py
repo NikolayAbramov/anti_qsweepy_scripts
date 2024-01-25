@@ -9,10 +9,10 @@ Data_dir ="E:\Abramov"
 plotting_script = "plot_S"
 
 
-preset = True
-Fstart = 4e9
-Fstop = 10e9
-Npoints = 6000
+preset = False
+Fstart = 4.7e9
+Fstop = 8e9
+Npoints = 32000
 power = -20
 bw = 1000
 

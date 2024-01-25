@@ -6,15 +6,15 @@ from collections import *
 
 data_dir = "E:/Abramov"
 plotting_script = "plot_all_iv.gp"
-sw_seq = OrderedDict((('1_1', [1,2]), ))
+sw_seq = OrderedDict((('3', [5,6]), ))
 #sw_seq = OrderedDict((('1', [1,2]),('2', [1,3]),('3', [1,4]),('4', [1,5]),('5', [1,6]),('6', [1,7]),('7', [1,8]),('8', [1,9]),('9', [1,10]),('10', [1,11]) ))
 #sw_seq = OrderedDict((('1', [3,4]),('2', [3,5]),('3', [3,6]),('4', [3,7]),('5', [3,8]),('6', [3,9]),('7', [3,10]),('8', [3,11]),('9', [3,12]) ))
 #sw_seq = OrderedDict((('10-1', [1,11]), ))
 #sw_seq = OrderedDict((('2_full_2', [3,5]), ))
 
 start = 0.
-stop = 1e-3
-step = 10e-6
+stop = 200e-3
+step = 1e-3
 delay = 10e-3	
 
 I_list = arange(start, stop + step, step)

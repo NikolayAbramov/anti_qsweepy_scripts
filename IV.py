@@ -4,36 +4,42 @@ from numpy import *
 import time
 from collections import *
 
-data_dir = "E:/Abramov"
+data_dir = "D:/Belanovsky"
 plotting_script = "plot_all_iv.gp"
-sw_seq = OrderedDict((('10_full', [1,11]), ))
+
+#Sample switching sequence
+sw_seq = OrderedDict((('Tolya_w11_RF3_small_capa', [1,11]), ))
 #sw_seq = OrderedDict((('1', [1,2]),('2', [1,3]),('3', [1,4]),('4', [1,5]),('5', [1,6]),('6', [1,7]),('7', [1,8]),('8', [1,9]),('9', [1,10]),('10', [1,11]) ))
 #sw_seq = OrderedDict((('4', [7,8]),('5', [7,9]),('6', [7,10]),('7', [7,11]),('8', [7,12]) ))
 #sw_seq = OrderedDict((('10-1', [1,11]), ))
 #sw_seq = OrderedDict((('2_full_2', [3,5]), ))
 
+#Current sweep range
 start = 0.
-stop = 100e-6
-step = 0.1e-6
-delay = 10e-3	
+stop = 2e-6
+step = 0.001e-6
+delay = 100e-6
 
 I_list = arange(start, stop + step, step)
-I_list = append( I_list, arange(stop, -stop-step, -step))
-I_list = append( I_list, arange(-stop, step, step))
+#I_list = append( I_list, arange(stop, step, -step))
+#I_list = append( I_list, arange(stop, -stop-step, -step))
+#I_list = append( I_list, arange(-stop, step, step))
 
+#Surce-measure unit 
 #smu = Keithley_2400.SMU("GPIB2::11::INSTR")
-#smu = Artificial_SMU.Artificial_SMU( Keithley_6221.CurrentSource("GPIB2::10::INSTR"), Keithley_2182A.Voltmeter("GPIB2::7::INSTR") )
-smu = Artificial_SMU.Artificial_SMU( Keithley_2400.CurrentSource("GPIB0::11::INSTR"), Keithley_2182A.Voltmeter("GPIB0::7::INSTR") )
+smu = Artificial_SMU.Artificial_SMU( Keithley_6221.CurrentSource("Keithley_6221"), Keithley_2182A.Voltmeter("Keithley_2182A") )
+#smu = Artificial_SMU.Artificial_SMU( Keithley_2400.CurrentSource("GPIB0::11::INSTR"), Keithley_2182A.Voltmeter("GPIB0::7::INSTR") )
 smu.four_wire("on")
 smu.source('CURR')
-smu.source_autorange("OFF")
-smu.source_range(1e-3)
-smu.limit(0.6)
+smu.source_range(10e-6)
+smu.source_autorange("ON")
+smu.limit(30.0)
 smu.aperture(2)
-smu.meter_range(0.1)
-smu.meter_autorange('ON')
+smu.meter_range(0.01)
+smu.meter_autorange('OFF')
 smu.averaging_count(1)
 
+#Optional sample switch
 switch_present = False
 try:
 	switch = DC_Switch.DC_Switch('dc_switch')

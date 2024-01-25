@@ -5,50 +5,53 @@ from numpy import *
 import time
 from collections import *
 
-data_dir = "E:/data/Abramov"
+data_dir = "D:/Belanovsky"
 
-tc_chan_high = "T6"
-tc_chan_low = "T5"
+tc_chan_high = "JT_CERNOX"
+tc_chan_low = None
 T_high_low = 1.6 #between Low and High
 
-Ttol = 0.5
+Ttol = 0.01
 
 #Sample name: switch state
-sw_seq = OrderedDict(( ('1',[1,2]),('2',[3,4]), ('3',[5,6]), ('4',[7,8]),('5',[9,10]), ('6',[11,12]) ))
+sw_seq = OrderedDict(( ('1',[1,2]),('2',[3,4]),('3',[5,6]) ))
 
-meas_delay = 15.
+meas_delay = 1.
 Rthr = 1e3 #Do not swap polarity above
 
-Imeas = 0.1e-6
+Imeas = 500e-6
 
-tc = Triton_DR200.TemperatureController('DR200', term_chars = '\n')
+#tc = Triton_DR200.TemperatureController('DR200', term_chars = '\n')
+tc = Mercury_iTc.TemperatureController('iTC')
 
-smu = Artificial_SMU.Artificial_SMU( Keithley_6221.CurrentSource('GPIB1::10::INSTR'), Keithley_2182A.Voltmeter('GPIB1::7::INSTR') )
+smu = Artificial_SMU.Artificial_SMU( Keithley_6221.CurrentSource('Keithley_6221'), Keithley_2182A.Voltmeter('Keithley_2182A') )
 
 smu.four_wire("on")
 smu.source('CURR')
 smu.source_autorange("OFF")
-smu.source_range(2e-6)
-smu.limit(0.3)
-smu.aperture(2)
-smu.meter_range(0.1)
-smu.meter_autorange('ON')
+smu.source_range(2e-3)
+smu.limit(2)
+smu.aperture(3)
+smu.meter_range(0.01)
+smu.meter_autorange('OFF')
 smu.averaging_count(1)
 
 
 switch_present = True
 try:
-	switch = DC_Switch.DC_Switch('dc_switch', term_chars = '\n')
+	switch = DC_Switch.DC_Switch('Switch')
 except:
 	switch_present = False
 	print('DC Switch not found')
 
 ##################################################################################
 def GetT():
-	Tlow = tc.temperature(tc_chan_low)
 	Thigh = tc.temperature(tc_chan_high)
-	if Thigh < T_high_low: return Tlow
-	else: return Thigh
+	if tc_chan_low is not None: 
+		Tlow = tc.temperature(tc_chan_low)
+		if Thigh < T_high_low: return Tlow
+		else: return Thigh
+	return Thigh	
 
 print("R vs temperature free run")
 path = data_mgmt.default_save_path(data_dir, time = False, name = "RvsT")

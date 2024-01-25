@@ -5,7 +5,7 @@ from anti_qsweepy.routines.helper_functions import *
 import tables
 from numpy import *
 
-Data_dir ="E:\Abramov" 
+Data_dir ="D:\Igor" 
 plotting_script = "plot_2d_S"
 row_descr = "Current, A"
 
@@ -13,11 +13,11 @@ bias_vals = arange(-6e-3,6e-3, 0.1e-3)
 bias_range = 10e-3
 bias_limit = 10
 
-preset = True
+preset = False
 Fstart = 4e9
 Fstop = 10.5e9
 Npoints = 1500
-power = -15
+power = -10
 bw = 100
 
 SegmentedSweep = False

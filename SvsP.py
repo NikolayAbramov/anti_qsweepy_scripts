@@ -9,12 +9,12 @@ Data_dir ="E:/Abramov"
 plotting_script = "plot_2d_S"
 #powers = hstack (( arange(-50,-40,2), arange(-40,10, 1) ))
 #14 powers = hstack (( arange(-60,-40,10), arange(-45,15,5) ))
-powers = hstack ( arange(-50, 6,1) )
+powers = hstack ( arange(-30, 10,1) )
 
 abaptive_aperture = True
 #[[power, bandwidth],...]
 #bw_profile  = [[-60,1],[-50,1],[-40,5],[-20,10],[10,10e3]]
-bw_profile  = [[-50,10],[-30,100],[-20,500],[10,10e3]]
+bw_profile  = [[-30,10],[-20,100],[10,10e3]]
 #14 averaging_profile = [[-60,10],[-50,5],[-40,1],[10,1]]
 #averaging_profile = [[-60,3],[-50,1],[10,1]]
 averaging_profile = [[-60,1],[-50,1],[10,1]]
