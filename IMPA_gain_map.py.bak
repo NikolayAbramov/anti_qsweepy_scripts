@@ -1,6 +1,3 @@
-import sys, os
-sys.path.insert(0, os.path.abspath('../anti_qsweepy'))
-
 from anti_qsweepy.drivers import *
 from anti_qsweepy.routines import data_mgmt
 from anti_qsweepy.routines.jpa_tuning import *
@@ -12,9 +9,9 @@ import tables
 data_dir ="C:/Users/User/Documents/IMPA"
 plotting_script = "JPA\\plot_jpa_tuning_results"
 
-# Fcent = arange(6.9e9, 7.35e9, 0.05e9)
+Fcent = arange(6.9e9, 7.35e9, 0.05e9)
 #Fcent = arange(7.05e9, 7.35e9, 0.05e9)
-Fcent = [7.1e9,]
+#Fcent = [7.1e9,]
 
 #Optimization goals
 target_gain  = 20
@@ -27,15 +24,14 @@ w_cent = 0
 
 #Parameters ranges
 bias_range = (0.35e-3, 0.75e-3)
-pump_range = (-5, 10)
+pump_range = (-5,10)
 #Central frequency range. 
 #Pump frequency is not optomized if 0
 #It'll reduce optimization time time
 target_freq_span = 0e6
 
 #Bias source parameters
-# bias_ch = 1 #Channel
-bias_ch = 0 #Channel
+bias_ch = 1 #Channel
 bias_source_range = 10e-3
 bias_source_limit = 10
 
@@ -50,13 +46,12 @@ vna = Agilent_PNA.NetworkAnalyzer('TCPIP0::10.1.0.75::inst0::INSTR')
 #bias = Keithley_2400.CurrentSource('2400')
 #bias = Keithley_6221.CurrentSource('GPIB0::10::INSTR')
 #bias = Yokogawa_GS200.CurrentSource('GPIB0::2::INSTR')
-# bias = DAC_24.CurrentSource('DAC_24')
-bias = DAC_24.CurrentSource('TCPIP0::10.1.0.101::1000::SOCKET')
+bias = DAC_24.CurrentSource('DAC_24')
 #bias = Keithley_2651.MagnetSupply("NNDAC", rate = 1.)
 #pump = Agilent_PSG.Generator('Agilent_PSG')
-pump = Agilent_PSG.Generator('TCPIP0::10.1.0.79::inst0::INSTR')
+#pump = Agilent_PSG.Generator('TCPIP0::10.1.0.79::inst0::INSTR')
 #pump = SignalCore_SC5511A.Generator("100029B4")
-# pump = SignalCore_SC5511A.Generator("100029B6")
+pump = SignalCore_SC5511A.Generator("100029B6")
 
 #Tuner settings
 bias.channel(bias_ch)
@@ -97,8 +92,8 @@ group_n = 0
 try:
 	for f_cent in Fcent:
 		print("Fs = {:e} Hz".format(f_cent))
-		tuner.target_freq = f_cent
-		op, status = tuner.find_gain(popsize = 50, minpopsize = 5, tol = 0.01, std_tol = 1, maxiter = 10, threshold = 150, disp = True)
+		tuner.target_freq = f_cent 
+		op, status = tuner.find_gain(popsize = 50, minpopsize = 5, tol = 0.01, maxiter = 10, threshold = 150, disp = True)
 		print(tuner.res)
 		print(op)
 		file.write('\n'+op.file_str())
@@ -114,20 +109,20 @@ try:
 		thumbnail['Gsnr'] = op.Gsnr
 		thumbnail.append()
 		f.flush()
-
+		
 		S21on, S21off, Fpoints = tuner.vna_snapshot(op)
-		group = f.create_group(f.root,'group_{:d}'.format(group_n),"S21")
+		group = f.create_group(f.root,'group_{:d}'.format(group_n),"S21") 
 		f.create_array(group, 'pump_on', S21on, "S21")
 		f.create_array(group, 'pump_off', S21off, "S21")
 		f.create_array(group, 'frequency', Fpoints, "Frequency, Hz")
 		f.flush()
-
+		
 		S21on, S21off, Fpoints = tuner.snr_snapshot(op, Nmeas = 100)
 		f.create_array(group, 'snr_pump_on', S21on, "S21")
 		f.create_array(group, 'snr_pump_off', S21off, "S21")
 		f.create_array(group, 'snr_frequency', Fpoints, "Frequency, Hz")
 		f.flush()
-
+		
 		group_n += 1
 except KeyboardInterrupt:
 	print( "Interrupted by user" )
@@ -135,4 +130,4 @@ except:
 	raise
 
 f.close()
-file.close()
+file.close()	

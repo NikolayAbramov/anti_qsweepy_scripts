@@ -1,3 +1,5 @@
 __pycache__/
 drivers/__pycache__/
 routines/__pycache__/
+.idea
+.ipynb_checkpoints
