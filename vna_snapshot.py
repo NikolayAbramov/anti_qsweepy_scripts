@@ -5,7 +5,7 @@ from anti_qsweepy.routines.helper_functions import *
 import tables
 from numpy import *
 
-Data_dir ="C:/Users/User/Documents/IMPA" 
+Data_dir =r"C:\Users\Nikolay\OneDrive - НИТУ МИСиС\Документы\RF_modules" 
 plotting_script = "plot_S"
 
 
@@ -22,7 +22,7 @@ Segments =[ {'start':Fstart, 'bandwidth': 500, 'power':power },
 {'start':7e9, 'bandwidth': 100, 'power':power },
 {'start':15e9,'bandwidth': 20, 'power':power }]
 
-na = Agilent_PNA.NetworkAnalyzer('pna-x')
+na = Agilent_PNA.NetworkAnalyzer('PNA-X')
 #na = RS_ZNB20.NetworkAnalyzer('ZNB20')
 ###########################################################################
 print("VNA snapshot")
