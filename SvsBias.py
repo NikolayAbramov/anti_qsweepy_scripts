@@ -1,44 +1,50 @@
 from anti_qsweepy.drivers import *
 from anti_qsweepy.routines import data_mgmt
-from anti_qsweepy.routines.helper_functions import *
 
-import tables
 from numpy import *
 
-Data_dir =r"C:\Users\Nikolay\OneDrive - НИТУ МИСиС\Документы\test_measurements" 
-plotting_script = "plot_2d_S"
-row_descr = "Current, A"
+Data_dir =r"C:\Users\User\Documents\meas_data"
+plotting_script = "2d_S_dly_upd"
+row_descr = "Voltage, V"
 
-bias_vals = arange(-1.5e-3,1.5e-3, 0.05e-3)
-bias_range = 10e-3
-bias_limit = 10
-bias_ch = 1
+bias_vals = linspace(-0,5,200)
+bias_range = 10
+bias_limit = 2e-2
+bias_ch = 8
 
 preset = True
 Fstart = 4e9
 Fstop = 10e9
-Npoints = 1000
-power = -5
-bw = 10000
+Npoints = 200
+power = -40
+bw = 500
 
-SegmentedSweep = False
+SegmentedSweep = True
 
+# Continuous sweep with variable bandwidth and power
 Segments =[ {'start':Fstart, 'bandwidth': 500, 'power':power },
 {'start':7e9, 'bandwidth': 100, 'power':power },
 {'start':15e9,'bandwidth': 20, 'power':power }]
 
-na = Dummy_VNA.NetworkAnalyzer()
+# Segmented sweep
+fc_list = [6.92756e9, 7.0333e9, 7.13325e9]
+span = 50e6
+segment_table = []
+for fc in fc_list:
+	segment_table += [{'start':fc-span/2, 'stop':fc+span/2, 'points':Npoints, 'power':power,'bandwidth':bw}]
+
+#na = Dummy_VNA.NetworkAnalyzer()
+na = Agilent_PNA.NetworkAnalyzer('TCPIP0::10.1.0.24::hislip0::INSTR')
 #na = Agilent_PNA.NetworkAnalyzer('TCPIP0::10.1.0.75::inst0::INSTR')
 # na = Agilent_PNA.NetworkAnalyzer('pna-x')
 #na = RS_ZNB20.NetworkAnalyzer('ZNB20')
 #bias_source = STS60.BiasSourceByNNDAC("NNDAC")
 #bias_source = Keithley_2400.CurrentSource('2400')
-#bias_source = Keithley_6221.CurrentSource('GPIB0::10::INSTR')
+#bias_source = Keithley_6221.CurrentSource('GPIB0::12::INSTR')
 #bias_source = Keithley_2651.MagnetSupply("NNDAC", rate = 1.)
-#bias_source = Yokogawa_GS200.CurrentSource('GPIB0::2::INSTR')
-# bias_source = DAC_24.CurrentSource('DAC_24')
-#bias_source = DAC_24.CurrentSource('TCPIP0::10.1.0.101::1000::SOCKET')
-bias_source = Dummy_CurrentSource.CurrentSource()
+bias_source = Yokogawa_GS200.VoltageSource('GPIB0::2::INSTR')
+#bias_source = DAC_24.VoltageSource('TCPIP0::192.168.0.3::1000::SOCKET')
+#bias_source = Dummy_CurrentSource.CurrentSource()
 ###########################################################################
 print("VNA bias scan")
 path = data_mgmt.default_save_path(Data_dir, name = "SvsBias")
@@ -52,7 +58,7 @@ if preset:
 	
 na.sweep_type("LIN")	
 if SegmentedSweep:
-	segment_table = uniform_segment_table(Fstop,Npoints,Segments)
+	#segment_table = uniform_segment_table(Fstop,Npoints,Segments)
 	na.seg_tab(segment_table)
 	na.sweep_type("SEGM")
 else:
@@ -69,12 +75,12 @@ data_mgmt.spawn_plotting_script(path, plotting_script)
 na.output('on')
 bias_source.output('on')
 #Sweep
-print( "Parameter range: from {:.3f} to {:.3f}".format( min(bias_vals), max(bias_vals) ))
+print( f"Parameter range: from {min(bias_vals)} to {max(bias_vals)}" )
 na.soft_trig_arm()
 for bias_val in bias_vals:
 	try:
 		bias_source.setpoint(bias_val) 
-		print("Bias = {:f}".format(bias_val), end = '\r')
+		print(f"Bias = {bias_val}               ", end = '\r')
 		S = na.read_data()
 		d_array.append(S.reshape(1,len(S) ))
 		r_array.append( array([bias_val]) )
