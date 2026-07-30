@@ -5,7 +5,7 @@ from anti_qsweepy.routines.helper_functions import *
 import tables
 from numpy import *
 
-Data_dir =r"C:\Users\User\Documents\meas_data"
+Data_dir =r"D:\Abramov"
 plotting_script = "plot_S"
 
 preset = False
@@ -21,7 +21,8 @@ Segments =[ {'start':Fstart, 'bandwidth': 500, 'power':power },
 {'start':7e9, 'bandwidth': 100, 'power':power },
 {'start':15e9,'bandwidth': 20, 'power':power }]
 
-na = Agilent_PNA.NetworkAnalyzer('TCPIP0::10.1.0.24::hislip0::INSTR')
+#na = Agilent_PNA.NetworkAnalyzer('TCPIP0::10.1.0.24::hislip0::INSTR')
+na = RS_ZVB20.NetworkAnalyzer('TCPIP0::10.1.0.55::INSTR')
 #na = RS_ZNB20.NetworkAnalyzer('ZNB20')
 ###########################################################################
 print("VNA snapshot")

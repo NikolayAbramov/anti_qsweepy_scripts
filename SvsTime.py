@@ -5,10 +5,9 @@ import tables
 import time
 from numpy import *
 
-Data_dir ="E:\Abramov" 
+Data_dir =r"D:\Abramov"
 plotting_script = "plot_2d_S"
 row_descr = "Time, s"
-delay = 10e-3
 preset = False
 Fstart = 4e9
 Fstop = 10.5e9
@@ -22,7 +21,8 @@ Segments =[ {'start':Fstart, 'bandwidth': 500, 'power':power },
 {'start':7e9, 'bandwidth': 100, 'power':power },
 {'start':15e9,'bandwidth': 20, 'power':power }]
 
-na = Agilent_PNA.NetworkAnalyzer('PNA-X')
+#na = Agilent_PNA.NetworkAnalyzer('PNA-X')
+na = RS_ZVB20.NetworkAnalyzer('TCPIP0::10.1.0.55::INSTR')
 #na = RS_ZNB20.NetworkAnalyzer('ZNB20')
 ###########################################################################
 print("VNA sweeps in time")
@@ -43,7 +43,7 @@ else:
 	na.sweep_type("LIN")
 	
 Fna = na.freq_points()
-f, d_array, r_array = data_mgmt.extendable_2d(path, Fna, row_descr = row_descr)
+f, d_array, r_array = data_mgmt.extendable_2d(path, Fna, row_name = row_descr)
 data_mgmt.spawn_plotting_script(path, plotting_script)
 
 na.output('on')

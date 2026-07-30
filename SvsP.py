@@ -3,11 +3,11 @@ from anti_qsweepy.routines import data_mgmt
 import scipy.interpolate as si
 from numpy import *
 
-Data_dir =r"C:\Users\User\Documents\meas_data"
+Data_dir =r"D:\Abramov"
 plotting_script = "plot_2d_S_upd"
 #powers = hstack (( arange(-50,-40,2), arange(-40,10, 1) ))
 #14 powers = hstack (( arange(-60,-40,10), arange(-45,15,5) ))
-powers = hstack ( arange(-65, 0,1) )
+powers = hstack ( arange(-50, -15,0.5) )
 
 abaptive_aperture = True
 #[[power, bandwidth],...]
@@ -21,7 +21,7 @@ f_cent = 7e9
 span = 50e6
 bw = 100
 
-SegmentedSweep = True
+SegmentedSweep = False
 # Segmented sweep
 fc_list = [6.92756e9, 7.0333e9, 7.13325e9]
 
@@ -34,7 +34,8 @@ def mk_seg_tab(fc_list, span, points, power, bw):
 ###########################################################################
 print("VNA power scan")
 #na = Agilent_PNA.NetworkAnalyzer('pna-x')
-na = Agilent_PNA.NetworkAnalyzer('TCPIP0::10.1.0.24::hislip0::INSTR')
+na = RS_ZVB20.NetworkAnalyzer('TCPIP0::10.1.0.55::INSTR')
+#na = Agilent_PNA.NetworkAnalyzer('TCPIP0::10.1.0.24::hislip0::INSTR')
 #na = RS_ZNB20.NetworkAnalyzer('ZNB20')
 path = data_mgmt.default_save_path(Data_dir, name = "SvsP")
 print("Saving files to: ",path)

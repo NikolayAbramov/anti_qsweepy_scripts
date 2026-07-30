@@ -34,7 +34,8 @@ for fc in fc_list:
 	segment_table += [{'start':fc-span/2, 'stop':fc+span/2, 'points':Npoints, 'power':power,'bandwidth':bw}]
 
 #na = Dummy_VNA.NetworkAnalyzer()
-na = Agilent_PNA.NetworkAnalyzer('TCPIP0::10.1.0.24::hislip0::INSTR')
+#na = Agilent_PNA.NetworkAnalyzer('TCPIP0::10.1.0.24::hislip0::INSTR')
+na = RS_ZVB20.NetworkAnalyzer('TCPIP0::10.1.0.55::INSTR')
 #na = Agilent_PNA.NetworkAnalyzer('TCPIP0::10.1.0.75::inst0::INSTR')
 # na = Agilent_PNA.NetworkAnalyzer('pna-x')
 #na = RS_ZNB20.NetworkAnalyzer('ZNB20')
